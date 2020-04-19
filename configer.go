@@ -45,10 +45,13 @@ func NewConfigerCore(configType string, configName string, paths ...string) Core
 		core: viper.New(),
 	}
 	handler.SetConfigType(configType)
-	handler.SetConfigName(configName)
-	for _, path := range paths {
-		handler.AddConfigPath(path)
+	if configName != "" {
+		handler.SetConfigName(configName)
+		for _, path := range paths {
+			handler.AddConfigPath(path)
+		}
 	}
+
 	return handler
 }
 
