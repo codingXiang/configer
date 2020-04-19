@@ -110,11 +110,14 @@ func (this *Core) ReadConfig(data []byte) (*viper.Viper, error) {
 	if data != nil {
 		if err := this.getCore().ReadConfig(bytes.NewBuffer(data)); err == nil {
 			return this.getCore(), nil
+		} else {
+			return nil, err
 		}
 	} else {
 		if err := this.getCore().ReadInConfig(); err == nil {
 			return this.getCore(), nil
+		} else {
+			return nil, err
 		}
 	}
-	panic("read config error")
 }
