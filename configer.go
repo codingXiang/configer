@@ -108,11 +108,11 @@ func (this *Core) WriteConfigAs(path string) error {
 
 func (this *Core) ReadConfig(data []byte) (*viper.Viper, error) {
 	if data != nil {
-		if err := this.getCore().ReadInConfig(); err == nil {
+		if err := this.getCore().ReadConfig(bytes.NewBuffer(data)); err == nil {
 			return this.getCore(), nil
 		}
 	} else {
-		if err := this.getCore().ReadConfig(bytes.NewBuffer(data)); err == nil {
+		if err := this.getCore().ReadInConfig(); err == nil {
 			return this.getCore(), nil
 		}
 	}
