@@ -1,6 +1,9 @@
 package configer
 
-import "github.com/spf13/viper"
+import (
+	"bytes"
+	"github.com/spf13/viper"
+)
 
 type (
 	ConfigerInterface interface {
@@ -15,7 +18,7 @@ type (
 		SetConfigType(in string)
 		SetConfigName(in string)
 		AddConfigPath(in string)
-		ReadConfig() (*viper.Viper, error)
+		ReadConfig(data []byte) (*viper.Viper, error)
 	}
 
 	//Configer : 整體設定檔
@@ -103,11 +106,15 @@ func (this *Core) WriteConfigAs(path string) error {
 	return this.core.SafeWriteConfigAs(path)
 }
 
-func (this *Core) ReadConfig() (*viper.Viper, error) {
-	if err := this.getCore().ReadInConfig(); err == nil {
-		return this.getCore(), nil
+func (this *Core) ReadConfig(data []byte) (*viper.Viper, error) {
+	if data != nil {
+		if err := this.getCore().ReadInConfig(); err == nil {
+			return this.getCore(), nil
+		}
 	} else {
-		panic("read config error")
-		return nil, err
+		if err := this.getCore().ReadConfig(bytes.NewBuffer(data)); err == nil {
+			return this.getCore(), nil
+		}
 	}
+	panic("read config error")
 }
