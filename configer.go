@@ -9,6 +9,9 @@ type (
 	}
 	CoreInterface interface {
 		SetAutomaticEnv()
+		SetDefault(key string, value interface{}) CoreInterface
+		WriteConfig() error
+		WriteConfigAs(path string) error
 		SetConfigType(in string)
 		SetConfigName(in string)
 		AddConfigPath(in string)
@@ -67,29 +70,42 @@ func (this *Configer) AddCore(key string, handler CoreInterface) ConfigerInterfa
 	this.handler[key] = handler
 	return this
 }
-func (c *Core) SetAutomaticEnv() {
-	c.getCore().AutomaticEnv()
+func (this *Core) SetAutomaticEnv() {
+	this.getCore().AutomaticEnv()
 }
 
-func (c *Core) SetConfigType(in string) {
-	c.getCore().SetConfigType(in)
+func (this *Core) SetConfigType(in string) {
+	this.getCore().SetConfigType(in)
 }
 
-func (c *Core) SetConfigName(in string) {
-	c.getCore().SetConfigName(in)
+func (this *Core) SetConfigName(in string) {
+	this.getCore().SetConfigName(in)
 }
 
-func (c *Core) AddConfigPath(in string) {
-	c.getCore().AddConfigPath(in)
+func (this *Core) AddConfigPath(in string) {
+	this.getCore().AddConfigPath(in)
 }
 
-func (c *Core) getCore() *viper.Viper {
-	return c.core
+func (this *Core) getCore() *viper.Viper {
+	return this.core
 }
 
-func (c *Core) ReadConfig() (*viper.Viper, error) {
-	if err := c.getCore().ReadInConfig(); err == nil {
-		return c.getCore(), nil
+func (this *Core) SetDefault(key string, value interface{}) CoreInterface {
+	this.getCore().SetDefault(key, value)
+	return this
+}
+
+func (this *Core) WriteConfig() error {
+	return this.core.SafeWriteConfig()
+}
+
+func (this *Core) WriteConfigAs(path string) error {
+	return this.core.SafeWriteConfigAs(path)
+}
+
+func (this *Core) ReadConfig() (*viper.Viper, error) {
+	if err := this.getCore().ReadInConfig(); err == nil {
+		return this.getCore(), nil
 	} else {
 		panic("read config error")
 		return nil, err
