@@ -3,6 +3,7 @@ package configer
 import (
 	"bytes"
 	"github.com/spf13/viper"
+	"strings"
 )
 
 type (
@@ -11,7 +12,7 @@ type (
 		AddCore(key string, handler CoreInterface) ConfigerInterface
 	}
 	CoreInterface interface {
-		SetAutomaticEnv()
+		SetAutomaticEnv(prefix string)
 		SetDefault(key string, value interface{}) CoreInterface
 		WriteConfig() error
 		WriteConfigAs(path string) error
@@ -76,7 +77,11 @@ func (this *Configer) AddCore(key string, handler CoreInterface) ConfigerInterfa
 	this.handler[key] = handler
 	return this
 }
-func (this *Core) SetAutomaticEnv() {
+func (this *Core) SetAutomaticEnv(prefix string) {
+	if prefix != "" {
+		this.getCore().SetEnvPrefix(prefix)
+	}
+	this.getCore().SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	this.getCore().AutomaticEnv()
 }
 
