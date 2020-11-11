@@ -16,8 +16,7 @@ type Core struct {
 /// 2. 檔案名稱 (例如檔名為 config.yaml 就輸入 config)
 /// 3. 後續皆為檔案路徑，可以支援多個路徑尋找檔案
 func NewCore(configType FileType, configName string, paths ...string) *Core {
-	handler := NewCoreWithData(nil)
-	handler.SetConfigType(configType.String())
+	handler := NewCoreWithData(configType, nil)
 	if configName != "" {
 		handler.SetConfigName(configName)
 		for _, path := range paths {
@@ -28,8 +27,9 @@ func NewCore(configType FileType, configName string, paths ...string) *Core {
 	return handler
 }
 
-func NewCoreWithData(data []byte) *Core {
+func NewCoreWithData(configType FileType, data []byte) *Core {
 	c := new(Core)
+	c.SetConfigType(configType.String())
 	c.core = viper.New()
 	if data != nil {
 		c.data = bytes.NewBuffer(data)
