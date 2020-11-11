@@ -29,8 +29,8 @@ func NewCore(configType FileType, configName string, paths ...string) *Core {
 
 func NewCoreWithData(configType FileType, data []byte) *Core {
 	c := new(Core)
-	c.SetConfigType(configType.String())
 	c.core = viper.New()
+	c.SetConfigType(configType.String())
 	if data != nil {
 		c.data = bytes.NewBuffer(data)
 	}
